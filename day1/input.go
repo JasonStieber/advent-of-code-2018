@@ -1,3 +1,5 @@
+package main
+
 const input = `+15
 -14
 -9
