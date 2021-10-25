@@ -8,8 +8,10 @@ import (
 
 func main() {
 	r := convert(input)
+	s := count(r)
 	v := twiceReached(r)
-	fmt.Printf("The first frequencey we reached twice was %v \n", v)
+	fmt.Printf("Solution to part 1: sum the total: %v \n", s)
+	fmt.Printf("Solution to part 2: find the duplicate sum: %v\n", v)
 }
 
 func count(i []int) int {
