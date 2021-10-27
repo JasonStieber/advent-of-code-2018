@@ -15,12 +15,33 @@ type rect struct {
 
 func main() {
 	count := 0
+	open := 0
 	m := make(map[string]int)
 	rects := parse(input)
 	for _, r := range rects {
 		fill(r, m, &count)
 	}
+	for i, r := range rects {
+		if chkForNoDups(r, m) {
+			open = i + 1
+		}
+	}
 	fmt.Printf("The answer to part A: the number of double used squares is: %v\n", count)
+	fmt.Printf("The answer to part B: the only open pattern is %v \n", open)
+}
+
+func chkForNoDups(r rect, m map[string]int) bool {
+	for i := r.x; i < r.x+r.width; i++ {
+		for j := r.y; j < r.y+r.height; j++ {
+			x := strconv.Itoa(i)
+			y := strconv.Itoa(j)
+			key := x + "," + y
+			if m[key] == 2 {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func fill(r rect, m map[string]int, c *int) {
