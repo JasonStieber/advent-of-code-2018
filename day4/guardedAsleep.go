@@ -15,6 +15,12 @@ type log struct {
 	date time.Time
 }
 
+type mostSlept struct {
+	time string
+	num  int
+	id   int
+}
+
 type logs []log
 
 func (s logs) Less(i, j int) bool { return s[i].date.Before(s[j].date) }
@@ -44,13 +50,27 @@ func main() {
 		//fmt.Printf("Agent #%v %v on %v \n", v.id, v.info, v.date)
 	}
 
+	guards := make(map[int]bool)
 	sleepCount := howLongSleeping(sheet)
 	t, i := 0.0, 0
 	for k, v := range sleepCount {
+		if !guards[k] {
+			guards[k] = true
+		}
 		if t < v {
 			t, i = v, k
 		}
 	}
+	var win mostSlept
+	for i, _ := range guards {
+		slpLst := populateSleepTime(i, sheet)
+		for t, n := range slpLst {
+			if n > win.num {
+				win.id, win.time, win.num = i, t, n
+			}
+		}
+	}
+	fmt.Printf("Guard %v slept at time %v %v times \n", win.id, win.time, win.num)
 	times := populateSleepTime(i, sheet)
 	fmt.Printf("The Sleepest Guard is Guard #%v \n", i)
 	sleepestMin := ""
