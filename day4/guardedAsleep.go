@@ -70,30 +70,27 @@ func main() {
 			}
 		}
 	}
-	fmt.Printf("Guard %v slept at time %v %v times \n", win.id, win.time, win.num)
 	times := populateSleepTime(i, sheet)
-	fmt.Printf("The Sleepest Guard is Guard #%v \n", i)
 	sleepestMin := ""
 	count := 0
 	for k, v := range times {
-		fmt.Printf("Guard #1777 was asleep at %v %v times\n", k, v)
 		if v > count {
 			count = v
 			sleepestMin = k
 		}
 	}
-	//fmt.Printf("The sleepy guard sleeps %v", times)
-	fmt.Printf("The sleepest min is %v\n", sleepestMin)
+	min, _ := strconv.Atoi(sleepestMin)
+	min2, _ := strconv.Atoi(win.time)
+	fmt.Printf("The answer to Part A is that guard #%v slept most at time %v for an answer of %v\n", i, sleepestMin, i*min)
+	fmt.Printf("The answer to Part B is that guard #%v slept at time %v most offten the ansewr is %v\n", win.id, win.time, win.id*min2)
 }
 
 func populateSleepTime(id int, sheet logs) map[string]int {
 	sleepLog := make(map[string]int)
 	for i := 0; i < len(sheet); i++ {
 		if sheet[i].id == id && sheet[i].info == "falls asleep" {
-			//fmt.Printf("Sleep time: %v wakeup time: %v\n", sheet[i].date.Format("3:04PM"), sheet[i+1].date.Format("3:04PM"))
 			for t := sheet[i].date; t != sheet[i+1].date; t = t.Add(time.Minute) {
-				//	fmt.Printf("time tracking is: %v\n", t.Format("3:04pm"))
-				sleepLog[t.Format("15:04")]++
+				sleepLog[t.Format("04")]++
 			}
 		}
 	}
