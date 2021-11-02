@@ -33,16 +33,66 @@ func main() {
 	}
 	sort.Sort(sheet)
 	currentID := 0
-	for _, v := range sheet {
-		if v.id == 0 {
-			v.id = currentID
+	for i := range sheet {
+
+		if sheet[i].id == 0 {
+			sheet[i].id = currentID
 		} else {
-			currentID = v.id
+			currentID = sheet[i].id
 		}
-		fmt.Printf("%v %v %v\n", v.date.Format("[2006-01-02 15:04]"), v.id, v.info)
+		//fmt.Printf("%v %v %v\n", v.date.Format("[2006-01-02 15:04]"), v.id, v.info)
 		//fmt.Printf("Agent #%v %v on %v \n", v.id, v.info, v.date)
 	}
 
+	sleepCount := howLongSleeping(sheet)
+	t, i := 0.0, 0
+	for k, v := range sleepCount {
+		if t < v {
+			t, i = v, k
+		}
+	}
+	times := populateSleepTime(i, sheet)
+	fmt.Printf("The Sleepest Guard is Guard #%v \n", i)
+	sleepestMin := ""
+	count := 0
+	for k, v := range times {
+		fmt.Printf("Guard #1777 was asleep at %v %v times\n", k, v)
+		if v > count {
+			count = v
+			sleepestMin = k
+		}
+	}
+	//fmt.Printf("The sleepy guard sleeps %v", times)
+	fmt.Printf("The sleepest min is %v\n", sleepestMin)
+}
+
+func populateSleepTime(id int, sheet logs) map[string]int {
+	sleepLog := make(map[string]int)
+	for i := 0; i < len(sheet); i++ {
+		if sheet[i].id == id && sheet[i].info == "falls asleep" {
+			//fmt.Printf("Sleep time: %v wakeup time: %v\n", sheet[i].date.Format("3:04PM"), sheet[i+1].date.Format("3:04PM"))
+			for t := sheet[i].date; t != sheet[i+1].date; t = t.Add(time.Minute) {
+				//	fmt.Printf("time tracking is: %v\n", t.Format("3:04pm"))
+				sleepLog[t.Format("15:04")]++
+			}
+		}
+	}
+	return sleepLog
+}
+
+func howLongSleeping(s logs) map[int]float64 {
+	sum := make(map[int]float64)
+	for i := 0; i < len(s); i++ {
+		//fmt.Printf("Agent #%v %v on %v \n", s[i].id, s[i].info, s[i].date)
+		if s[i].info == "falls asleep" {
+			//	fmt.Printf("Guard #%v fell asleep", s[i].id)
+			sum[s[i].id] += (s[i+1].date.Sub(s[i].date)).Minutes()
+			//	fmt.Printf("Here is the time map: %v", sum)
+			//	fmt.Printf("total time asleep is %v \n", sum[s[i].id])
+
+		}
+	}
+	return sum
 }
 
 func parse(s string) log {
