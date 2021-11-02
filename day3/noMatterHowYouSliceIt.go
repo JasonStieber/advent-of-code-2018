@@ -19,7 +19,7 @@ func main() {
 	m := make(map[string]int)
 	rects := parse(input)
 	for _, r := range rects {
-		fill(r, m, &count)
+		count += fill(r, m)
 	}
 	for i, r := range rects {
 		if chkForNoDups(r, m) {
@@ -44,7 +44,8 @@ func chkForNoDups(r rect, m map[string]int) bool {
 	return true
 }
 
-func fill(r rect, m map[string]int, c *int) {
+func fill(r rect, m map[string]int) int {
+	c := 0
 	for i := r.x; i < r.x+r.width; i++ {
 		for j := r.y; j < r.y+r.height; j++ {
 			x := strconv.Itoa(i)
@@ -54,10 +55,11 @@ func fill(r rect, m map[string]int, c *int) {
 				m[key] = 1
 			} else if m[key] == 1 {
 				m[key]++
-				*c++
+				c++
 			}
 		}
 	}
+	return c
 }
 
 func parse(s string) []rect {
