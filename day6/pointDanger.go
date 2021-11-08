@@ -87,7 +87,7 @@ func main() {
 	//log.Printf("this is the unNormalized points: %v\n", points)
 	_, minX, _, minY := bounds(points)
 	nomPoints := normalize(points, minX, minY)
-	maxX, minX, maxY, minY := bounds(nomPoints)
+	maxX, _, maxY, _ := bounds(nomPoints)
 	// log.Printf("This is the normalized input: %v\n", points)
 	// log.Printf("Our new bounds are (%v,%v) (%v,%v)", minX, minY, maxX, maxY)
 	matrix := makeMatrix(maxX+1, maxY+1)
@@ -99,9 +99,36 @@ func main() {
 	fCount := countCosest(filledMatrix, nomPoints)
 	printMap(fCount)
 	p, biggest := findBiggest(fCount)
-
+	t := totalInRange(filledMatrix, nomPoints, 10000)
 	log.Printf("The answer to part A: is point %v, with %v closest squares\n", p, biggest)
 	log.Panicf("The answer to part B: there are %v points that are under 10,000 unites away from all other points\n", t)
+}
+
+func totalInRange(m [][]entry, ps []point, goal int) int {
+	totalPoints := 0
+	for i := 0; i < len(m); i++ {
+		for j := 0; j < len(m[0]); j++ {
+			var (
+				p = point{i, j, false, 0}
+			)
+			if distToAllPoints(p, ps) < goal {
+				totalPoints++
+			}
+		}
+	}
+	return totalPoints
+}
+
+func distToAllPoints(p point, locs []point) int {
+	t := 0
+	for _, l := range locs {
+		t += manhatDis(p, l)
+	}
+	return t
+}
+
+func manhatDis(p1, p2 point) int {
+	return abs(p1.x-p2.x) + abs(p1.y-p2.y)
 }
 
 func printMap(m map[int]int) {
