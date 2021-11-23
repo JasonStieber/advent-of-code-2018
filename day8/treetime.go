@@ -4,7 +4,7 @@ import "log"
 
 type node struct {
 	metaData []int
-	children []*node
+	children []node
 }
 
 func main() {
@@ -23,7 +23,7 @@ func countChildrenVal(tree node) int {
 	for i := 0; i < len(tree.metaData); i++ {
 		slot := tree.metaData[i]
 		if len(tree.children) >= slot {
-			total += countChildrenVal(*tree.children[slot-1])
+			total += countChildrenVal(tree.children[slot-1])
 		}
 	}
 	return total
@@ -32,7 +32,7 @@ func countChildrenVal(tree node) int {
 func countData(tree node) int {
 	total := 0
 	for i := 0; i < len(tree.children); i++ {
-		total += countData(*tree.children[i])
+		total += countData(tree.children[i])
 	}
 	for j := 0; j < len(tree.metaData); j++ {
 		total += tree.metaData[j]
@@ -48,7 +48,7 @@ func buildTree(loc int, data []int) (node, int) {
 	for i := 0; i < numKids; i++ {
 		var child node
 		child, nLoc = buildTree(nLoc, data)
-		n.children = append(n.children, &child)
+		n.children = append(n.children, child)
 	}
 	for j := 0; j < numData; j++ {
 		n.metaData = append(n.metaData, data[nLoc+j])
